@@ -1,284 +1,339 @@
-REURB Portal
+# 🏘️ REURB Portal
 
-Portal web desenvolvido para automatizar o fluxo de geração, envio e assinatura de contratos de REURB.
+Portal web desenvolvido para **automatizar o fluxo de geração, envio e assinatura de contratos de REURB**.
 
-O projeto centraliza dados de clientes, organiza remessas, gera documentos personalizados e integra o processo de assinatura eletrônica com a Clicksign.
+O projeto centraliza dados de clientes, organiza remessas, gera documentos personalizados e integra todo o processo de assinatura eletrônica com a **Clicksign**.
 
-Projeto desenvolvido para uso interno. Este repositório público serve apenas como demonstração técnica e de portfólio. Credenciais, dados reais, documentos jurídicos, tokens, banco de dados e URLs de produção não são disponibilizados.
+> 🔒 Projeto desenvolvido para uso interno. Este repositório serve como demonstração técnica e de portfólio. Credenciais, dados reais, documentos jurídicos, tokens, banco de dados e URLs de produção não são disponibilizados.
 
-Visão geral
+---
 
-O sistema foi criado para reduzir tarefas manuais em um fluxo que antes dependia de planilhas, geração individual de documentos, envio de links e acompanhamento separado das assinaturas.
+## 📌 Visão geral
+
+O sistema foi desenvolvido para reduzir tarefas manuais em um processo que anteriormente dependia de planilhas, geração individual de documentos, envio de links e acompanhamento separado das assinaturas.
 
 A aplicação permite:
 
-importar clientes por planilha .xlsx;
+- 📊 Importar clientes através de planilhas `.xlsx`
+- 📁 Organizar clientes em diferentes remessas
+- 🔗 Gerar links únicos de confirmação
+- 👤 Exibir ao cliente os dados já cadastrados
+- 💳 Permitir a escolha de parcelas e dia de vencimento
+- 📄 Gerar contratos `.docx` automaticamente
+- ✍️ Criar processos de assinatura através da Clicksign
+- 🔄 Controlar a ordem das assinaturas
+- 📧 Enviar links iniciais por e-mail
+- 📋 Acompanhar o status de cada processo
+- 💾 Persistir os dados da aplicação
+- 🔐 Proteger a área administrativa com autenticação
 
-organizar clientes por remessas;
+---
 
-gerar links únicos de confirmação;
+## 🔄 Fluxo da aplicação
 
-exibir ao cliente os dados já cadastrados;
+```text
+            📊 Planilha de clientes
+                      │
+                      ▼
+             📁 Nova remessa
+                      │
+                      ▼
+          🔗 Links individuais
+                      │
+                      ▼
+        👤 Cliente confere os dados
+                      │
+                      ▼
+      💳 Escolhe parcelas e vencimento
+                      │
+                      ▼
+        📄 Contrato gerado automaticamente
+                      │
+                      ▼
+          ☁️ Envio para Clicksign
+                      │
+                      ▼
+            ✍️ Cliente assina
+                      │
+                      ▼
+      ✍️ Responsável realiza assinatura final
+                      │
+                      ▼
+             ✅ FINALIZADO
+```
 
-permitir escolha de parcelas e dia de vencimento;
+---
 
-gerar contratos .docx personalizados;
+## 🚀 Principais funcionalidades
 
-criar envelopes de assinatura na Clicksign;
+### 📁 Gestão de remessas
 
-controlar a ordem de assinatura entre cliente e responsável final;
+Cada nova planilha pode ser importada como uma **remessa independente**.
 
-acompanhar o status dos processos;
+Isso permite trabalhar com diferentes grupos de clientes sem perder o histórico dos processos anteriores.
 
-enviar o link inicial por e-mail;
+---
 
-manter os dados persistidos em banco SQLite;
+### 🔗 Links individuais
 
-proteger a área administrativa com autenticação.
+O sistema gera um **link exclusivo para cada cliente**.
 
-Fluxo da aplicação
+Ao acessar o link, o cliente encontra seus dados previamente cadastrados e não precisa preencher todas as informações novamente.
 
-Planilha de clientes
-        ↓
-Importação da remessa
-        ↓
-Geração dos links individuais
-        ↓
-Cliente confere os dados cadastrados
-        ↓
-Escolha de parcelas e vencimento
-        ↓
-Geração automática do contrato
-        ↓
-Criação do envelope na Clicksign
-        ↓
-Assinatura do cliente
-        ↓
-Assinatura do responsável final
-        ↓
-Processo finalizado
+---
 
-Principais funcionalidades
+### 💳 Escolha da forma de pagamento
 
-Gestão de remessas
+Na página de confirmação, o cliente pode selecionar:
 
-Cada nova planilha pode ser importada como uma remessa independente, permitindo separar diferentes grupos de clientes e preservar o histórico dos processos anteriores.
+- quantidade de parcelas;
+- dia de vencimento;
+- confirmação dos dados cadastrados.
 
-Links individuais
+Após a confirmação, o processo de geração do contrato começa automaticamente.
 
-O sistema gera um link exclusivo para cada cliente. O cliente não precisa preencher novamente os dados já cadastrados.
+---
 
-Geração automática de contratos
+### 📄 Geração automática de contratos
 
-Os dados da planilha são inseridos automaticamente em um modelo .docx, incluindo informações do cliente, quantidade de parcelas, vencimento e data.
+A aplicação utiliza um modelo de documento Word e substitui automaticamente os campos pelos dados correspondentes ao cliente.
 
-Integração com Clicksign
+São inseridas informações como:
 
-A aplicação utiliza a API da Clicksign para:
+- nome;
+- CPF;
+- RG;
+- endereço;
+- profissão;
+- estado civil;
+- contato;
+- e-mail;
+- quantidade de parcelas;
+- vencimento;
+- data.
 
-criar envelopes;
+O sistema também trata situações em que o Microsoft Word divide placeholders entre diferentes `runs` do documento.
 
-enviar documentos;
+---
 
-cadastrar signatários;
+## ✍️ Integração com Clicksign
 
-definir requisitos de assinatura;
+A aplicação utiliza a **API v3 da Clicksign** para automatizar o processo de assinatura eletrônica.
 
-controlar a ordem de assinatura;
+O sistema é responsável por:
 
-consultar o andamento do processo;
+- criar o envelope;
+- enviar o documento;
+- cadastrar os signatários;
+- configurar requisitos de assinatura;
+- definir a ordem das assinaturas;
+- ativar o envelope;
+- acompanhar o andamento;
+- identificar a conclusão do processo.
 
-identificar quando o envelope foi finalizado.
+---
 
-Ordem de assinatura
+## 🔢 Ordem das assinaturas
 
-O fluxo utiliza grupos de assinatura:
+Os signatários são separados em grupos:
 
-Grupo 1 → Cliente
-Grupo 2 → Responsável final
+```text
+Grupo 1
+   │
+   └── Cliente
+          │
+          ▼
+Grupo 2
+   │
+   └── Responsável pela assinatura final
+```
 
-O segundo signatário só entra na etapa de assinatura após a conclusão da primeira.
+Dessa forma, a segunda etapa ocorre somente após a conclusão da assinatura do cliente.
 
-Persistência
+---
 
-Os dados operacionais ficam armazenados em SQLite em armazenamento persistente do ambiente de produção.
+## 📊 Painel administrativo
 
-Área administrativa protegida
+O painel permite acompanhar os clientes de cada remessa e visualizar informações como:
 
-As rotas administrativas possuem autenticação e as credenciais são lidas por variáveis de ambiente.
+| Informação | Descrição |
+|---|---|
+| Cliente | Nome cadastrado |
+| E-mail | Endereço utilizado no processo |
+| WhatsApp | Contato cadastrado |
+| Processo | Situação atual |
+| E-mail inicial | Status do envio |
+| WhatsApp | Status da comunicação |
+| Ações | Operações disponíveis |
 
-Tecnologias utilizadas
+Também é possível realizar ações individuais ou preparar uma remessa inteira.
 
-Python
+---
 
-HTTP Server nativo do Python
+## 🔐 Segurança
 
-SQLite
+Algumas medidas utilizadas no projeto:
 
-OpenPyXL
+- 🔑 Credenciais armazenadas em variáveis de ambiente
+- 🔐 Autenticação da área administrativa
+- 🔗 Links individuais para cada cliente
+- 🗄️ Banco de produção separado do repositório
+- 🔑 Tokens de API fora do código-fonte
+- 🚫 Dados pessoais não expostos no repositório público
+- 🧪 Separação entre ambiente de testes e produção
 
-python-docx
+---
 
-Requests
+## 💾 Persistência de dados
 
-Clicksign API v3
+A aplicação utiliza **SQLite** para armazenar informações sobre:
 
-SMTP
+- remessas;
+- clientes;
+- links gerados;
+- processos;
+- status dos envios;
+- identificadores dos envelopes;
+- andamento das assinaturas.
 
-Render
+Em produção, o banco utiliza armazenamento persistente para que os dados sejam preservados entre novos deploys.
 
+---
+
+## 🛠️ Tecnologias utilizadas
+
+### Backend
+
+- **Python**
+- **SQLite**
+- **Requests**
+- **OpenPyXL**
+- **python-docx**
+
+### Integrações
+
+- **Clicksign API v3**
+- **SMTP**
+- **WhatsApp Business Cloud API** *(suporte previsto/configurável)*
+
+### Infraestrutura
+
+- **Render**
+- **GitHub**
+- **Persistent Disk**
+- **Environment Variables**
+
+---
+
+## ☁️ Deploy
+
+A aplicação foi implantada em ambiente cloud utilizando **Render**.
+
+A infraestrutura utiliza:
+
+```text
 GitHub
+   │
+   ▼
+Render
+   │
+   ├── Aplicação Python
+   ├── Environment Variables
+   ├── Persistent Disk
+   │
+   ├──── Clicksign API
+   │
+   └──── SMTP
+```
 
-Estrutura simplificada
+Isso permite que o sistema continue funcionando independentemente do computador utilizado para desenvolvê-lo.
 
-reurb-portal/
-├── reurb_portal_FINAL.py
-├── requirements.txt
-├── render.yaml
-├── .env.example
-├── README.md
-└── assets/
-    └── screenshots/
+---
 
-Arquivos sensíveis e dados reais não fazem parte da versão pública.
+## 🧠 Desafios técnicos
 
-Configuração por variáveis de ambiente
+Alguns dos principais desafios trabalhados durante o desenvolvimento:
 
-A aplicação utiliza variáveis de ambiente para separar configuração e código.
+- integração com API externa de assinatura eletrônica;
+- controle da ordem entre múltiplos signatários;
+- geração dinâmica de documentos Word;
+- manipulação de placeholders divididos em múltiplos `runs`;
+- importação e normalização de planilhas Excel;
+- persistência dos dados entre deploys;
+- acompanhamento automático do status das assinaturas;
+- separação entre ambientes de Sandbox e Produção;
+- armazenamento seguro de credenciais;
+- autenticação da área administrativa;
+- organização dos clientes por remessas.
 
-Exemplos:
+---
 
-CLICKSIGN_BASE_URL=
-CLICKSIGN_API_TOKEN=
+## 👨‍💻 O que desenvolvi neste projeto
 
-REURB_PUBLIC_URL=
-REURB_DATA_DIR=
+Durante o desenvolvimento foram implementados:
 
-REURB_ADMIN_USER=
-REURB_ADMIN_PASSWORD=
+- arquitetura do fluxo da aplicação;
+- importação e processamento de planilhas;
+- estruturação do banco SQLite;
+- gerenciamento de remessas;
+- geração de links individuais;
+- interface de confirmação do cliente;
+- geração automática de documentos;
+- integração com a Clicksign;
+- controle sequencial das assinaturas;
+- automação de e-mails;
+- sincronização dos status;
+- autenticação administrativa;
+- configuração do ambiente de produção;
+- deploy e persistência em cloud.
 
-REURB_SMTP_HOST=
-REURB_SMTP_PORT=
-REURB_SMTP_USER=
-REURB_SMTP_PASSWORD=
-REURB_SMTP_FROM=
+---
 
-Nenhum valor real deve ser versionado.
+## 📸 Screenshots
 
-Segurança
+### Painel administrativo
 
-Algumas medidas aplicadas no projeto:
+> Screenshot demonstrativo do painel será adicionado aqui.
 
-credenciais fora do código;
+### Confirmação do cliente
 
-autenticação da área administrativa;
+> Screenshot demonstrativo da página do cliente será adicionado aqui.
 
-links individuais para cada cliente;
+### Processo de assinatura
 
-separação entre área administrativa e confirmação do cliente;
+> Screenshot demonstrativo do fluxo de assinatura será adicionado aqui.
 
-armazenamento persistente fora do repositório;
+---
 
-tokens de API mantidos em variáveis de ambiente;
+## 🔒 Privacidade
 
-repositório de demonstração sem dados pessoais reais.
+Este repositório é destinado à **demonstração técnica do projeto**.
 
-Deploy
+Por questões de segurança e privacidade, não são disponibilizados:
 
-A aplicação foi implantada em ambiente cloud utilizando Render.
+- dados de clientes;
+- banco de dados de produção;
+- credenciais;
+- tokens de API;
+- senhas;
+- documentos jurídicos reais;
+- URLs administrativas;
+- informações pessoais utilizadas em produção.
 
-O ambiente de produção utiliza:
+---
 
-variáveis de ambiente;
+## 📈 Resultado
 
-armazenamento persistente;
+O projeto transforma um fluxo composto por diversas tarefas manuais em um processo integrado:
 
-processo web Python;
+**Planilha → confirmação do cliente → geração do contrato → assinatura eletrônica → acompanhamento → finalização.**
 
-integração com serviços externos via API.
+O objetivo foi criar uma solução simples para o usuário final, mantendo a automação e as integrações concentradas no backend.
 
-A URL de produção não é disponibilizada neste repositório.
+---
 
-Desafios técnicos
+## 👤 Autor
 
-Durante o desenvolvimento foram trabalhados pontos como:
+**Gabriel Alves**
 
-integração com uma API externa de assinatura eletrônica;
-
-controle de ordem entre múltiplos signatários;
-
-persistência de dados entre deploys;
-
-geração dinâmica de documentos Word;
-
-substituição de placeholders mesmo quando o Word divide o texto em múltiplos runs;
-
-acompanhamento automático do status dos envelopes;
-
-separação entre ambiente de testes e produção;
-
-proteção de credenciais e rotas administrativas.
-
-O que eu desenvolvi neste projeto
-
-arquitetura do fluxo;
-
-importação e tratamento de planilhas;
-
-banco SQLite;
-
-geração de documentos;
-
-integração com Clicksign;
-
-automação de e-mails;
-
-acompanhamento de status;
-
-organização por remessas;
-
-autenticação administrativa;
-
-configuração e deploy em produção.
-
-Screenshots
-
-Adicione aqui imagens com dados fictícios ou censurados.
-
-Painel administrativo
-
-assets/screenshots/admin.png
-
-Confirmação do cliente
-
-assets/screenshots/confirmacao.png
-
-Fluxo de assinatura
-
-assets/screenshots/assinatura.png
-
-Observação
-
-Este projeto está apresentado como estudo de caso e portfólio.
-
-Por segurança e privacidade, a versão pública não inclui:
-
-base de clientes;
-
-banco de produção;
-
-credenciais;
-
-tokens;
-
-documentos jurídicos reais;
-
-links de produção;
-
-e-mails reais;
-
-dados pessoais.
-
-Autor
-
-Desenvolvido por Gabriel Alves.
+Projeto desenvolvido como solução de automação de processos e integração de sistemas.
